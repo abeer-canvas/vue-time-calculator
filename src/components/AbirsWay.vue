@@ -1,7 +1,7 @@
 <template>
-  <div class="row">
+  <div class="row mb-2">
     <!-- Calculate Time blocks -->
-    <div class="cal-blocks col-6 bg-warning">
+    <div class="cal-blocks col-6">
       <p class="input-text">Insert time-blocks:</p>
       <textarea
         class="block-input d-block rounded w-100 p-2"
@@ -45,23 +45,32 @@
           </h5>
         </div>
       </div>
-      <button type="button" class="btn btn-outline-success mt-2 w-100">
+      <button
+        type="button"
+        class="btn btn-outline-success mt-2 w-100"
+        @click="send2Avg"
+      >
         Send to Average
       </button>
     </div>
 
     <!-- Calculate average time -->
-    <div class="cal-avg col-6 bg-warning">
+    <div class="cal-avg col-6">
+      <cal-average></cal-average>
     </div>
   </div>
 </template>
 
 <script>
+import CalAverage from "./CalAverage.vue";
 
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
+  components: {
+    CalAverage,
+  },
   data() {
     return {
       timeInput: "",
@@ -72,7 +81,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getTimeBlocksArray", "hours", "minutes", "getTargetHours"]),
+    ...mapGetters([
+      "getTimeBlocksArray",
+      "totalMin",
+      "hours",
+      "minutes",
+      "getTargetHours",
+    ]),
     isFulfilled() {
       if (this.hours >= this.getTargetHours) {
         return true;
@@ -81,7 +96,14 @@ export default {
       }
     },
     isNotFulfilled() {
-      if (this.hours < this.getTargetHours && this.minutes !== 0) {
+      if (this.hours < this.getTargetHours && !this.notCalculated) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    notCalculated() {
+      if (this.hours === 0 && this.minutes === 0) {
         return true;
       } else {
         return false;
@@ -98,15 +120,13 @@ export default {
       }
     },
     showMessage() {
-      if (this.hours === 0 && this.minutes === 0) {
+      if (this.notCalculated) {
         return "Calculate Time Blocks";
+      } else if (this.isNotFulfilled) {
+        return "Target Not Fulfilled";
+      } else {
+        return "Target Fulfilled";
       }
-
-      let message = this.isNotFulfilled
-        ? "Target Not Fulfilled"
-        : "Target Fulfilled";
-
-      return message;
     },
   },
   methods: {
@@ -132,6 +152,11 @@ export default {
       this.totalTime();
 
       this.timeInput = "";
+    },
+    send2Avg() {
+      this.$store.dispatch('singleTimeAdding', this.totalMin)
+      this.$store.dispatch("getAvg");
+      this.$store.dispatch('timeAdded');
     },
     getTotalBlockMinutes() {
       this.totalBlockMinutes = 0;
