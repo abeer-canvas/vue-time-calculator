@@ -156,10 +156,11 @@ export default {
     },
     send2Avg() {
       this.isDateUpdated = false;
-      console.log(this.isDateUpdated);
       this.$store.dispatch("singleTimeAdding", this.totalMin);
       this.$store.dispatch("getAvg");
       this.$store.dispatch("timeAdded");
+
+      this.defaultSetting();
     },
     getTotalBlockMinutes() {
       this.totalBlockMinutes = 0;

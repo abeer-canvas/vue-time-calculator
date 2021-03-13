@@ -1,4 +1,10 @@
 <template>
+  <div class="auth-alert alert alert-info">
+    <div>
+      <auth-modal class="d-inline"></auth-modal>
+      <span class="ml-2 font-weight-bold">for ABEER</span>
+    </div>
+  </div>
   <button
     type="button"
     class="btn btn-outline-secondary w-100 mb-2 font-weight-bold"
@@ -46,7 +52,7 @@
 
   <!-- Adding Date -->
   <div class="alert alert-info h5">
-    Last added on <strong>{{ lastUpdate }} </strong>
+    Last added on <strong class="mr-2">"{{ lastUpdate }}"</strong>
     <date-edit-modal @gettingDate="updateDate(payload)"></date-edit-modal>
   </div>
 
@@ -75,6 +81,7 @@
 <script>
 import BulkInput4Avg from "./BulkInput4Avg.vue";
 import DateEditModal from "../modals/DateEditModal.vue";
+import AuthModal from "./AuthModal.vue";
 
 import { mapGetters } from "vuex";
 
@@ -82,6 +89,7 @@ export default {
   components: {
     BulkInput4Avg,
     DateEditModal,
+    AuthModal,
   },
   data() {
     return {
@@ -165,6 +173,9 @@ export default {
       this.$store.dispatch("getAvg");
       this.$store.dispatch("timeAdded");
       // this.$store.dispatch("doUpdateDate");
+
+      this.dayHour = null;
+      this.dayMinute = null;
     },
   },
   created() {

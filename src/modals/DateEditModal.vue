@@ -97,7 +97,6 @@ export default {
     save() {
       let lastUpdate = this.theDate;
       this.$store.dispatch("updateDate", lastUpdate);
-      // this.$store.dispatch("doUpdateDate");
     },
   },
 };

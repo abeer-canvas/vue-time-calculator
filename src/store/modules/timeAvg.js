@@ -21,14 +21,17 @@ export default {
       state.avgBoxInputs = allInputs;
     },
     GATHERING_ALL_INPUTS(state) {
-      if (state.allInputsArr.length) {
+      if (!state.allInputsArr.length && state.avgBoxInputs) {
         state.allInputsArr = state.avgBoxInputs.match(state.regexTimes);
+        state.totalDays += state.allInputsArr.length;
+        state.avgBoxInputs = '';
       }
-      state.totalDays += state.allInputsArr.length;
     },
     MINS_FROM_AVG_BOX(state, mins) {
       state.totalMin4Avg += mins;
       state.isDateUpdated = false;
+
+      state.allInputsArr = [];
     },
     SINGLE_TIME_ADDING(state, singleTime) {
       state.isDateUpdated = false;
@@ -58,6 +61,7 @@ export default {
       state.totalMin4Avg = payload.totalMin;
       state.totalDays = payload.totalDays;
       state.lastUpdate = payload.lastUpdate;
+      state.isDateUpdated = payload.isDateUpdated;
     },
     UPDATE_DATE(state, payload) {
       state.lastUpdate = payload;
@@ -83,12 +87,16 @@ export default {
     timeAdded(context) {
       let totalMin = context.rootGetters.totalMin4Avg;
       let totalDays = context.rootGetters.totalDays;
+      let lastUpdate = context.rootGetters.lastUpdate;
+      let isDateUpdated = context.rootGetters.isDateUpdated;
 
       fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/time.json', {
         method: 'PUT',
         body: JSON.stringify({
           totalMin,
-          totalDays
+          totalDays,
+          lastUpdate,
+          isDateUpdated
         })
       }).then(response => {
         if (response.ok) {
@@ -99,11 +107,6 @@ export default {
       })
     },
     timeFetching(context) {
-      let dayAndMin = {
-        totalMin: null,
-        totalDays: null,
-        lastUpdate: null
-      };
       fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/time.json')
         .then(response => {
           if (response.ok) {
@@ -112,34 +115,34 @@ export default {
             throw Error('Not fetched')
           }
         }).then(data => {
-          dayAndMin.totalMin = data.totalMin;
-          dayAndMin.totalDays = data.totalDays;
-        });
-
-      fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/date.json')
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw Error('Not fetched');
+          let timeDataArr = {
+            totalMin: data.totalMin,
+            totalDays: data.totalDays,
+            lastUpdate: data.lastUpdate,
+            isDateUpdated: data.isDateUpdated
           }
-        }).then(data => {
-          dayAndMin.lastUpdate = data.lastUpdate;
-        });
 
-      context.commit('FETCH_DATA', dayAndMin);
-      context.commit('GET_AVG');
+          context.commit('FETCH_DATA', timeDataArr);
+          context.commit('GET_AVG');
+        });
     },
     updateDate(context, payload) {
       context.commit('UPDATE_DATE', payload);
+
+      let totalMin = context.rootGetters.totalMin4Avg;
+      let totalDays = context.rootGetters.totalDays;
       let lastUpdate = context.rootGetters.lastUpdate;
-      fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/date.json', {
+      let isDateUpdated = context.rootGetters.isDateUpdated;
+
+      fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/time.json', {
         method: 'PUT',
         body: JSON.stringify({
-          lastUpdate
+          totalMin,
+          totalDays,
+          lastUpdate,
+          isDateUpdated
         })
       });
-
     },
     // doUpdateDate(context) {
     //   context.commit('DO_UPDATE_DATE');
