@@ -44,6 +44,12 @@
     </div>
   </div>
 
+  <!-- Adding Date -->
+  <div class="alert alert-info h5">
+    Last added on <strong>{{ lastUpdate }} </strong>
+    <date-edit-modal @gettingDate="updateDate(payload)"></date-edit-modal>
+  </div>
+
   <!-- Show Average -->
   <div class="pt-3">
     <div class="h4 text-center">THE AVERAGE</div>
@@ -57,16 +63,25 @@
       <h5 class="card-title text-center">{{ showMessage }}</h5>
     </div>
   </div>
+  <div
+    class="alert font-weight-bold"
+    :class="{ 'alert-danger': !isDateUpdated, 'alert-success': isDateUpdated }"
+    role="alert"
+  >
+    {{ dateUpdateMessage }}
+  </div>
 </template>
 
 <script>
 import BulkInput4Avg from "./BulkInput4Avg.vue";
+import DateEditModal from "../modals/DateEditModal.vue";
 
 import { mapGetters } from "vuex";
 
 export default {
   components: {
     BulkInput4Avg,
+    DateEditModal,
   },
   data() {
     return {
@@ -74,10 +89,24 @@ export default {
       dayHour: null,
       dayMinute: null,
       singleMinutes: 0,
+      dateUpdated: false,
+      placeDate: null,
     };
   },
   computed: {
-    ...mapGetters(["min4Avg", "hr4Avg", "targetAvgTime"]),
+    ...mapGetters([
+      "min4Avg",
+      "hr4Avg",
+      "targetAvgTime",
+      "lastUpdate",
+      "isDateUpdated",
+    ]),
+    dateUpdateMessage() {
+      let message = this.isDateUpdated
+        ? `You updated the last addition date`
+        : `You didn't update the last addition date`;
+      return message;
+    },
     showAvgTime() {
       let hh = this.hr4Avg.toString().padStart(2, "0");
       let mm = this.min4Avg.toString().padStart(2, "0");
@@ -123,14 +152,19 @@ export default {
     },
   },
   methods: {
+    updateDate(payload) {
+      this.placeDate = payload;
+    },
     openAvgInput() {
       this.isHidden = !this.isHidden;
     },
     addToAvg() {
+      this.dateUpdated = false;
       let totalMin = Number(this.dayHour) * 60 + Number(this.dayMinute);
       this.$store.dispatch("singleTimeAdding", totalMin);
       this.$store.dispatch("getAvg");
       this.$store.dispatch("timeAdded");
+      // this.$store.dispatch("doUpdateDate");
     },
   },
   created() {

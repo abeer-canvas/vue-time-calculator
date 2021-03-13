@@ -87,6 +87,7 @@ export default {
       "hours",
       "minutes",
       "getTargetHours",
+      "isDateUpdated",
     ]),
     isFulfilled() {
       if (this.hours >= this.getTargetHours) {
@@ -154,9 +155,11 @@ export default {
       this.timeInput = "";
     },
     send2Avg() {
-      this.$store.dispatch('singleTimeAdding', this.totalMin)
+      this.isDateUpdated = false;
+      console.log(this.isDateUpdated);
+      this.$store.dispatch("singleTimeAdding", this.totalMin);
       this.$store.dispatch("getAvg");
-      this.$store.dispatch('timeAdded');
+      this.$store.dispatch("timeAdded");
     },
     getTotalBlockMinutes() {
       this.totalBlockMinutes = 0;
