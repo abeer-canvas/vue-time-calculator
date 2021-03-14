@@ -9,9 +9,7 @@
         </div>
         <!-- Categories -->
         <div class="categories text-right col-6">
-          <div class="btn-menu btn btn-success">
-            MENU <i class="fas fa-bars"></i>
-          </div>
+          <manual-modal></manual-modal>
         </div>
       </div>
     </div>
@@ -24,10 +22,12 @@
 
 <script>
 import AbirsWay from "./AbirsWay.vue";
+import ManualModal from "./ManualModal.vue";
 
 export default {
   components: {
     AbirsWay,
+    ManualModal,
   },
 };
 </script>
@@ -35,8 +35,5 @@ export default {
 <style scoped>
 .logo {
   font-family: "Satisfy", cursive;
-}
-.btn-menu {
-  font-weight: bold;
 }
 </style>;

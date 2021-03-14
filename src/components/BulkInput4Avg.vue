@@ -5,7 +5,7 @@
       class="time-input d-block rounded w-100 p-2"
       v-model="avgInputs"
     ></textarea>
-    <button class="btn btn-success btn-avg mt-2 w-100" @click="calAvg">
+    <button class="btn btn-avg mt-2 w-100" @click="calAvg">
       CALCULATE AVERAGE
     </button>
   </div>
@@ -74,8 +74,9 @@ export default {
   font-size: 20px;
 }
 .btn-avg {
-  font-family: "Concert One", cursive;
+  font-family: "Fjalla One", sans-serif;
   font-size: 24px;
-  font-weight: 200;
+  border: 3px solid rgb(133, 133, 133);
+  background: rgb(241, 241, 241);
 }
 </style>

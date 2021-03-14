@@ -5,7 +5,7 @@
       type="button"
       class="btn btn-info font-weight-bold"
       data-toggle="modal"
-      data-target="#exampleModal"
+      data-target="#exampleModal1"
       v-if="!isLoggedIn"
     >
       Login
@@ -17,7 +17,7 @@
     <!-- Modal -->
     <div
       class="modal fade"
-      id="exampleModal"
+      id="exampleModal1"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
