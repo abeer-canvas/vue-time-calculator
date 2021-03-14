@@ -9,6 +9,8 @@ export default {
       targetAvgTime: 7,
       lastUpdate: '',
       isDateUpdated: true,
+      passCode: '',
+      password: '',
 
       // For Bulk Avg Box
       avgBoxInputs: '',
@@ -57,11 +59,19 @@ export default {
         state.totalMin4Avg = 0;
       }
     },
+    LOGGED_IN(state, payload) {
+      state.password = payload;
+    },
+    LOGGED_OUT(state) {
+      state.password = '';
+    },
     FETCH_DATA(state, payload) {
       state.totalMin4Avg = payload.totalMin;
       state.totalDays = payload.totalDays;
       state.lastUpdate = payload.lastUpdate;
       state.isDateUpdated = payload.isDateUpdated;
+      state.password = payload.password;
+      state.passCode = payload.passCode;
     },
     UPDATE_DATE(state, payload) {
       state.lastUpdate = payload;
@@ -84,11 +94,15 @@ export default {
     getAvg({ commit }) {
       commit('GET_AVG');
     },
-    timeAdded(context) {
+    loggedIn(context, payload) {
+      context.commit('LOGGED_IN', payload);
+
       let totalMin = context.rootGetters.totalMin4Avg;
       let totalDays = context.rootGetters.totalDays;
       let lastUpdate = context.rootGetters.lastUpdate;
       let isDateUpdated = context.rootGetters.isDateUpdated;
+      let password = context.rootGetters.password;
+      let passCode = context.rootGetters.passCode;
 
       fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/time.json', {
         method: 'PUT',
@@ -96,7 +110,65 @@ export default {
           totalMin,
           totalDays,
           lastUpdate,
-          isDateUpdated
+          isDateUpdated,
+          password,
+          passCode
+        })
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+
+        } else {
+          throw Error('Not added')
+        }
+      })
+
+    },
+    loggedOut(context) {
+      context.commit('LOGGED_OUT');
+
+      let totalMin = context.rootGetters.totalMin4Avg;
+      let totalDays = context.rootGetters.totalDays;
+      let lastUpdate = context.rootGetters.lastUpdate;
+      let isDateUpdated = context.rootGetters.isDateUpdated;
+      let password = context.rootGetters.password;
+      let passCode = context.rootGetters.passCode;
+
+      fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/time.json', {
+        method: 'PUT',
+        body: JSON.stringify({
+          totalMin,
+          totalDays,
+          lastUpdate,
+          isDateUpdated,
+          password,
+          passCode
+        })
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw Error('Not added')
+        }
+      })
+    },
+    timeAdded(context) {
+      let totalMin = context.rootGetters.totalMin4Avg;
+      let totalDays = context.rootGetters.totalDays;
+      let lastUpdate = context.rootGetters.lastUpdate;
+      let isDateUpdated = context.rootGetters.isDateUpdated;
+      let password = context.rootGetters.password;
+      let passCode = context.rootGetters.passCode;
+
+      fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/time.json', {
+        method: 'PUT',
+        body: JSON.stringify({
+          totalMin,
+          totalDays,
+          lastUpdate,
+          isDateUpdated,
+          password,
+          passCode
         })
       }).then(response => {
         if (response.ok) {
@@ -119,7 +191,9 @@ export default {
             totalMin: data.totalMin,
             totalDays: data.totalDays,
             lastUpdate: data.lastUpdate,
-            isDateUpdated: data.isDateUpdated
+            isDateUpdated: data.isDateUpdated,
+            password: data.password,
+            passCode: data.passCode
           }
 
           context.commit('FETCH_DATA', timeDataArr);
@@ -133,6 +207,8 @@ export default {
       let totalDays = context.rootGetters.totalDays;
       let lastUpdate = context.rootGetters.lastUpdate;
       let isDateUpdated = context.rootGetters.isDateUpdated;
+      let password = context.rootGetters.password;
+      let passCode = context.rootGetters.passCode;
 
       fetch('https://time-calculator-abir-default-rtdb.firebaseio.com/time.json', {
         method: 'PUT',
@@ -140,7 +216,9 @@ export default {
           totalMin,
           totalDays,
           lastUpdate,
-          isDateUpdated
+          isDateUpdated,
+          password,
+          passCode
         })
       });
     },
@@ -163,6 +241,15 @@ export default {
     },
     isDateUpdated(state) {
       return state.isDateUpdated;
+    },
+    // isLoggedIn(state) {
+    //   return state.isLoggedIn;
+    // },
+    passCode(state) {
+      return state.passCode;
+    },
+    password(state) {
+      return state.password;
     },
     min4Avg(state) {
       return state.min4Avg;

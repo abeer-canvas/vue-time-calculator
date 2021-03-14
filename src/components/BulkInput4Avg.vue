@@ -23,7 +23,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getAllInputsArr"]),
+    ...mapGetters(["getAllInputsArr", "password", 'passCode']),
   },
   methods: {
     ...mapActions([
@@ -34,14 +34,16 @@ export default {
       "timeAdded",
     ]),
     calAvg() {
-      this.getAllAvgInputs(this.avgInputs);
-      this.gatheringAllInputs();
-      this.getTotalMinutes();
-      this.minsFromAvgBox(this.totalBulkMin);
-      this.getAvg();
-      this.timeAdded();
+      if (this.password === this.passCode) {
+        this.getAllAvgInputs(this.avgInputs);
+        this.gatheringAllInputs();
+        this.getTotalMinutes();
+        this.minsFromAvgBox(this.totalBulkMin);
+        this.getAvg();
+        this.timeAdded();
 
-      this.avgInputs = "";
+        this.avgInputs = "";
+      }
     },
     getTotalMinutes() {
       this.totalBulkMin = 0;

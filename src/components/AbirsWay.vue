@@ -88,6 +88,8 @@ export default {
       "minutes",
       "getTargetHours",
       "isDateUpdated",
+      "password",
+      "passCode",
     ]),
     isFulfilled() {
       if (this.hours >= this.getTargetHours) {
@@ -155,12 +157,14 @@ export default {
       this.timeInput = "";
     },
     send2Avg() {
-      this.isDateUpdated = false;
-      this.$store.dispatch("singleTimeAdding", this.totalMin);
-      this.$store.dispatch("getAvg");
-      this.$store.dispatch("timeAdded");
+      if (this.password === this.passCode) {
+        this.isDateUpdated = false;
+        this.$store.dispatch("singleTimeAdding", this.totalMin);
+        this.$store.dispatch("getAvg");
+        this.$store.dispatch("timeAdded");
 
-      this.defaultSetting();
+        this.defaultSetting();
+      }
     },
     getTotalBlockMinutes() {
       this.totalBlockMinutes = 0;

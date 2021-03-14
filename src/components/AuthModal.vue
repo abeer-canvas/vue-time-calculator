@@ -6,8 +6,12 @@
       class="btn btn-info font-weight-bold"
       data-toggle="modal"
       data-target="#exampleModal"
+      v-if="!isLoggedIn"
     >
-      {{ signupOrLogin }}
+      Login
+    </button>
+    <button v-else class="btn btn-info font-weight-bold" @click="logout">
+      Logout
     </button>
 
     <!-- Modal -->
@@ -37,73 +41,28 @@
             <!--  -->
             <form>
               <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
-                />
-                <small id="emailHelp" class="form-text text-muted"
-                  >Only Abeer Can Login</small
-                >
-              </div>
-              <div class="form-group">
                 <label for="exampleInputPassword1">Password</label>
                 <input
                   type="password"
-                  class="form-control"
-                  id="exampleInputPassword1"
-                  v-model="password"
-                />
-              </div>
-              <div v-if="isSigningUp" class="form-group">
-                <label for="confirmPassword1">Confirm Password</label>
-                <input
-                  type="password"
                   class="form-control border"
-                  :class="{ 'border-danger': isNotConfirm }"
-                  id="confirmPassword1"
-                  v-model="confirmPassword"
+                  :class="{ 'border-danger': !passwordMatched }"
+                  id="exampleInputPassword1"
+                  v-model="modalPassword"
                 />
-                <small
-                  id="emailHelp"
-                  v-if="isNotConfirm"
-                  class="form-text text-muted"
-                  >Password doesn't match</small
-                >
               </div>
-              <!-- <div class="form-group form-check">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="exampleCheck1"
-                />
-                <label class="form-check-label" for="exampleCheck1"
-                  >Check me out</label
-                >
-              </div> -->
+              <p v-if="!passwordMatched">Password is not Valid</p>
               <button
                 type="submit"
-                class="btn btn-primary"
+                class="btn btn-info font-weight-bold"
                 data-dismiss="modal"
                 @click="authenticate"
+                :disabled="!passwordMatched"
               >
-                {{ signupOrLogin }}
+                Login
               </button>
             </form>
             <!--  -->
           </div>
-          <!-- <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div> -->
         </div>
       </div>
     </div>
@@ -116,22 +75,20 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      email: "",
-      password: "",
-      confirmPassword: "",
+      modalPassword: "",
     };
   },
   computed: {
-    ...mapGetters(["isSigningUp"]),
-    signupOrLogin() {
-      if (this.isSigningUp) {
-        return "Signup";
+    ...mapGetters(["password", "passCode"]),
+    isLoggedIn() {
+      if (this.password === this.passCode) {
+        return true;
       } else {
-        return "Login";
+        return false;
       }
     },
-    isNotConfirm() {
-      if (this.password !== this.confirmPassword) {
+    passwordMatched() {
+      if (this.modalPassword === this.passCode) {
         return true;
       } else {
         return false;
@@ -140,16 +97,11 @@ export default {
   },
   methods: {
     authenticate() {
-      const dataObj = {
-        email: this.email,
-        password: this.password,
-      };
-
-      if (this.isSigningUp) {
-        this.$store.dispatch("signedUp", dataObj);
-      } else {
-        this.$store.dispatch("loggedIn", dataObj);
-      }
+      console.log(this.modalPassword);
+      this.$store.dispatch("loggedIn", this.modalPassword);
+    },
+    logout() {
+      this.$store.dispatch("loggedOut");
     },
   },
 };

@@ -108,6 +108,8 @@ export default {
       "targetAvgTime",
       "lastUpdate",
       "isDateUpdated",
+      "password",
+      "passCode",
     ]),
     dateUpdateMessage() {
       let message = this.isDateUpdated
@@ -167,15 +169,17 @@ export default {
       this.isHidden = !this.isHidden;
     },
     addToAvg() {
-      this.dateUpdated = false;
-      let totalMin = Number(this.dayHour) * 60 + Number(this.dayMinute);
-      this.$store.dispatch("singleTimeAdding", totalMin);
-      this.$store.dispatch("getAvg");
-      this.$store.dispatch("timeAdded");
-      // this.$store.dispatch("doUpdateDate");
+      if (this.password === this.passCode) {
+        this.dateUpdated = false;
+        let totalMin = Number(this.dayHour) * 60 + Number(this.dayMinute);
+        this.$store.dispatch("singleTimeAdding", totalMin);
+        this.$store.dispatch("getAvg");
+        this.$store.dispatch("timeAdded");
+        // this.$store.dispatch("doUpdateDate");
 
-      this.dayHour = null;
-      this.dayMinute = null;
+        this.dayHour = null;
+        this.dayMinute = null;
+      }
     },
   },
   created() {
