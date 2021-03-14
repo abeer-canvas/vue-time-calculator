@@ -179,6 +179,8 @@ export default {
 
         this.dayHour = null;
         this.dayMinute = null;
+      } else {
+        alert("Abeer is not logged in");
       }
     },
   },

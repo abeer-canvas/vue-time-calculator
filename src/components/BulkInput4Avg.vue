@@ -23,7 +23,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getAllInputsArr", "password", 'passCode']),
+    ...mapGetters(["getAllInputsArr", "password", "passCode"]),
   },
   methods: {
     ...mapActions([
@@ -43,6 +43,8 @@ export default {
         this.timeAdded();
 
         this.avgInputs = "";
+      } else {
+        alert("Abeer is not logged in");
       }
     },
     getTotalMinutes() {

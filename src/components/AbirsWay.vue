@@ -164,6 +164,8 @@ export default {
         this.$store.dispatch("timeAdded");
 
         this.defaultSetting();
+      }else{
+        alert('Abeer is not logged in');
       }
     },
     getTotalBlockMinutes() {
